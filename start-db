@@ -1,0 +1,10 @@
+#!/bin/bash
+
+clear
+
+echo "Cleaning up docker containers"
+docker rm -f monkey
+echo "Starting mongoDB" && \
+# docker run -p 27017:27017 --name monkey -d mongo && \
+docker run -p 27017:27017 --name monkey -e MONGO_INITDB_ROOT_USERNAME=mongoadmin -e MONGO_INITDB_ROOT_PASSWORD=secret -d mongo && \
+echo "mongoDB started!"
