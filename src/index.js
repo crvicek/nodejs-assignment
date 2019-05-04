@@ -1,8 +1,6 @@
 import connectDb from './mongo'
 import express from 'express'
 import cors from 'cors';
-
-import mongoose from 'mongoose'
 import Route from './models/route';
 
 const port = process.env.DATABASE_PORT || 4000;
@@ -18,20 +16,10 @@ connectDb()
   )
   .catch(err => console.error(err))
 
+// Clear old data from the DB
+// Route.collection.drop()
 
-const createTestRide = async () => {
-  const ride = new Route({
-    time: 1511436338000,
-    energy: 53.2,
-    gps: ["52.093448638916016", "5.117378234863281"],
-    odo: 88526.413,
-    speed: 0,
-    soc: 72.8
-  })
-  await ride.save()
-}
-createTestRide()
-
+// Endpoint to check saved results
 app.get('/', (req, res) => {
   Route
     .find()
@@ -39,8 +27,17 @@ app.get('/', (req, res) => {
     .catch(err => console.error(err))
 })
 
-// app.get('/', async (req, res) => {
-//   const doc = await Route.find({})
-//   return res.send(doc)
-// })
 
+// Listen to NATS and save the messages
+const NATS = require("nats")
+const nats = NATS.connect({ json: true })
+
+nats.subscribe('vehicle.test-bus-1', function (msg) {
+  console.log('Received a message: ' + Object.values(msg))
+  saveRide(msg)
+})
+
+const saveRide = async (data) => {
+  const ride = new Route(data)
+  return await ride.save()
+}
