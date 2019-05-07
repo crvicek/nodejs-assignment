@@ -46,7 +46,7 @@ After data is pushed to NATS it will be available for other services to listen. 
 - [x] Create MongoDB database
 - [x] Push data from NATS to MongoDB
 - [x] Create REST API
-- [ ] Create WebSocket API
+- [x] Create WebSocket API
 - [ ] Test all APIs
 - [ ] Create Docker container for app (Optional)
 
