@@ -1,7 +1,10 @@
 import connectDb from './mongo'
 import express from 'express'
-import cors from 'cors';
-import Route from './models/route';
+import cors from 'cors'
+import listener from './listener'
+import mongoose from 'mongoose'
+import routeSchema from './models/route'
+
 
 const port = process.env.DATABASE_PORT || 4000;
 
@@ -17,27 +20,17 @@ connectDb()
   .catch(err => console.error(err))
 
 // Clear old data from the DB
-// Route.collection.drop()
+// bus1.collection.drop()
 
-// Endpoint to check saved results
-app.get('/', (req, res) => {
-  Route
+listener('bus1')
+listener('bus2')
+listener('bus3')
+
+// Endpoint to check saved results - REST API
+app.get(`/db/:vehicleName`, (req, res) => {
+  mongoose.model(req.params.vehicleName)
     .find()
     .then(docs => res.send(docs))
     .catch(err => console.error(err))
 })
 
-
-// Listen to NATS and save the messages
-const NATS = require("nats")
-const nats = NATS.connect({ json: true })
-
-nats.subscribe('vehicle.test-bus-1', function (msg) {
-  console.log('Received a message: ' + Object.values(msg))
-  saveRide(msg)
-})
-
-const saveRide = async (data) => {
-  const ride = new Route(data)
-  return await ride.save()
-}

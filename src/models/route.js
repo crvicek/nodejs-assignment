@@ -8,10 +8,7 @@ const routeSchema = new mongoose.Schema(
     odo: Number,
     speed: Number,
     soc: Number
-  }, 
-  { timestamps: { createdAt: 'created_at' }}
-);
-
-const Route = mongoose.model('Route', routeSchema);
-
-export default Route;
+  },
+  { timestamps: { createdAt: 'created_at' } }
+)
+export default routeSchema
