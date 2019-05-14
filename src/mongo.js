@@ -7,4 +7,5 @@ const connectDb = () => {
 }
 
 export default connectDb
+export const db = mongoose.connection
 
